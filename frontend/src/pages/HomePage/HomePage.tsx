@@ -214,9 +214,12 @@ export default function HomePage() {
                 654 321 987
               </a>
               <h3 className="contacts__info-title">Adress</h3>
-              <p className="contacts__details contacts__details--adress">
+              <a
+                href="https://maps.app.goo.gl/tegoBDK7hXZwY7mx7"
+                className="contacts__details contacts__details--adress"
+              >
                 2905 West Drive, Buffalo Grove
-              </p>
+              </a>
               <h3 className="contacts__info-title">Working hours</h3>
               <p className="contacts__details">
                 Monday - Friday: 10:00 - 19:00

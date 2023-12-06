@@ -49,6 +49,7 @@ export default function BookingPage() {
 
   const [isLoading, setLoading] = useState(true);
   const [isAccepted, setAccepted] = useState(false);
+  const [isError, setError] = useState(false);
 
   const getData = async () => {
     setLoading(true);
@@ -60,7 +61,7 @@ export default function BookingPage() {
         setMasters(mastersFromServer);
         setSubservices(subservicesFromServer);
       })
-      .catch((err) => console.log(err))
+      .catch(() => setError(true))
       .finally(() => {
         setLoading(false);
       });
@@ -151,19 +152,21 @@ export default function BookingPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const namePattern = /^[a-zA-Zа-яА-я]+ [a-zA-Zа-яА-я]+$/;
+    const namePattern = /^[a-zа-яъїє']+ [a-zа-яъїє']+$/i;
+    const minPhoneLength = 13;
     const isError =
-      !namePattern.test(clientName.trim()) || clientPhone.length < 8;
+      !namePattern.test(clientName.trim()) ||
+      clientPhone.length < minPhoneLength;
 
     setClientNameErr(!namePattern.test(clientName.trim()));
-    setClientPhoneErr(clientPhone.length < 8);
+    setClientPhoneErr(clientPhone.length < minPhoneLength);
 
     if (isError) {
       return;
     }
 
     const order = {
-      clientName,
+      clientName: clientName.trim(),
       phoneNumber: clientPhone,
       orderTotal: total,
       masterId:
@@ -206,9 +209,12 @@ export default function BookingPage() {
   }, [currService]);
 
   return (
-    <div className="stet__booking booking">
+    <>
       {!isAccepted ? (
-        <form className="booking__form _container" onSubmit={handleSubmit}>
+        <form
+          className="stet__booking booking _container"
+          onSubmit={handleSubmit}
+        >
           <div className="booking__left-column">
             <fieldset className="booking__services">
               <legend className="booking__title">Select service</legend>
@@ -232,13 +238,19 @@ export default function BookingPage() {
               </div>
             </fieldset>
 
+            {isError && (
+              <div className="booking__loader-container">
+                Something went wrong. Try reload the page or back later.
+              </div>
+            )}
+
             {!!currService && isLoading && (
               <div className="booking__loader-container">
                 <Loader />
               </div>
             )}
 
-            {!!currService && !isLoading && (
+            {!!currService && !isLoading && !isError && (
               <>
                 <fieldset className="booking__prices">
                   <legend className="booking__title">
@@ -246,7 +258,7 @@ export default function BookingPage() {
                   </legend>
 
                   <div className="booking__price-switcher">
-                    <label htmlFor="cbx-3">Headmaster</label>
+                    <p onClick={() => setIsHeadMaster(false)}>Master</p>
                     <div className="price-switcher">
                       <input
                         type="checkbox"
@@ -258,32 +270,38 @@ export default function BookingPage() {
                         <span></span>
                       </label>
                     </div>
+                    <p onClick={() => setIsHeadMaster(true)}>Headmaster</p>
                   </div>
 
                   <div className="booking__prices-container prices">
                     <ul className="prices__list">
                       {subservices.map((subService) => (
-                        <li key={subService.id} className="prices__item">
-                          <div className="prices__item-title">
-                            {subService.name}
-                          </div>
-                          <div className="prices__price">
-                            ${' '}
-                            {isHeadMaster
-                              ? subService.headMasterPrice
-                              : subService.masterPrice}
-                          </div>
-                          <input
-                            type="checkbox"
-                            className="prices__checkbox"
-                            checked={selectedSubservices.some(
-                              (currSubservice) =>
-                                currSubservice.id === subService.id,
-                            )}
-                            onChange={(e) =>
-                              handleSelectSubserviceChange(e, subService)
-                            }
-                          />
+                        <li
+                          key={subService.id}
+                          className="prices__booking-item"
+                        >
+                          <label className="prices__label">
+                            <div className="prices__item-title">
+                              {subService.name}
+                            </div>
+                            <div className="prices__price">
+                              ${' '}
+                              {isHeadMaster
+                                ? subService.headMasterPrice
+                                : subService.masterPrice}
+                            </div>
+                            <input
+                              type="checkbox"
+                              className="prices__checkbox"
+                              checked={selectedSubservices.some(
+                                (currSubservice) =>
+                                  currSubservice.id === subService.id,
+                              )}
+                              onChange={(e) =>
+                                handleSelectSubserviceChange(e, subService)
+                              }
+                            />
+                          </label>
                         </li>
                       ))}
                     </ul>
@@ -346,77 +364,78 @@ export default function BookingPage() {
             )}
           </div>
 
-          <div className="booking__right-column">
-            <div className="booking__personal-container">
-              {isClientNameErr && (
-                <p className="booking__notification">
-                  Your full name must contain two words
-                </p>
-              )}
-              <input
-                type="text"
-                className="booking__personal"
-                placeholder="Enter your fullname"
-                value={clientName}
-                onChange={handleClientNameChange}
+          <aside className="booking__right-column">
+            <div className="booking__sticky">
+              <div className="booking__personal-container">
+                {isClientNameErr && (
+                  <p className="booking__notification">
+                    Your full name must contain two words
+                  </p>
+                )}
+                <input
+                  type="text"
+                  className="booking__personal"
+                  placeholder="Enter your fullname"
+                  value={clientName}
+                  onChange={handleClientNameChange}
+                />
+              </div>
+              <div className="booking__personal-container">
+                {isClientPhoneErr && (
+                  <p className="booking__notification">Enter your phone</p>
+                )}
+                <PhoneInput
+                  className="booking__phone-input"
+                  defaultCountry="ua"
+                  value={clientPhone}
+                  onChange={handleClientPhoneChange}
+                />
+              </div>
+              <textarea
+                className="booking__personal booking__personal--textarea"
+                placeholder="You can add comments here"
+                value={clientComment}
+                onChange={handleClientCommentChange}
               />
-            </div>
-            <div className="booking__personal-container">
-              {isClientPhoneErr && (
-                <p className="booking__notification">Enter your phone</p>
-              )}
-              <PhoneInput
-                className="booking__phone-input"
-                defaultCountry="ua"
-                value={clientPhone}
-                onChange={handleClientPhoneChange}
-              />
-            </div>
-            <textarea
-              className="booking__personal booking__personal--textarea"
-              placeholder="You can add comments here"
-              value={clientComment}
-              onChange={handleClientCommentChange}
-            />
-
-            <h3 className="booking__title booking__title--mb">Your order</h3>
-            {selectedSubservices.length === 0 ? (
-              <div className="booking__order-message">Order list is empty</div>
-            ) : (
-              <>
-                <ul className="booking__order-list">
-                  {selectedSubservices.map((subservice) => (
-                    <li key={subservice.id} className="booking__order-item">
-                      {subservice.name}
-                      <button
-                        className="booking__remove-item"
-                        onClick={() => removeSubservice(subservice.id)}
-                      />
-                    </li>
-                  ))}
-                </ul>
-                <div className="booking__order-master">
-                  Your master:{' '}
-                  <span>
-                    {masters.find((m) => m.id === currMaster)?.name ||
-                      (isHeadMaster ? 'Free Headmaster' : 'Free Master')}
-                  </span>
+              <h3 className="booking__title booking__title--mb">Your order</h3>
+              {selectedSubservices.length === 0 ? (
+                <div className="booking__order-message">
+                  Order list is empty
                 </div>
-              </>
-            )}
-
-            <p className="booking__prices-total">
-              Total <span>$ {total}</span>
-            </p>
-
-            <button
-              type="submit"
-              className="booking__button"
-              disabled={selectedSubservices.length === 0 || !clientName}
-            >
-              Apply
-            </button>
-          </div>
+              ) : (
+                <>
+                  <ul className="booking__order-list">
+                    {selectedSubservices.map((subservice) => (
+                      <li key={subservice.id} className="booking__order-item">
+                        {subservice.name}
+                        <button
+                          className="booking__remove-item"
+                          onClick={() => removeSubservice(subservice.id)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="booking__order-master">
+                    Your master:{' '}
+                    <span>
+                      {masters.find((m) => m.id === currMaster)?.name ||
+                        (isHeadMaster ? 'Free Headmaster' : 'Free Master')}
+                    </span>
+                  </div>
+                </>
+              )}
+              <p className="booking__prices-total">
+                Total <span>$ {total}</span>
+              </p>
+              <button
+                type="submit"
+                className="booking__button"
+                disabled={selectedSubservices.length === 0 || !clientName}
+              >
+                Apply
+              </button>
+            </div>
+          </aside>
         </form>
       ) : (
         <div className="booking__accepted _container">
@@ -439,6 +458,6 @@ export default function BookingPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

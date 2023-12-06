@@ -19,6 +19,7 @@ export default function ServicePage() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isSwitchHeadmaster, setSwitchHeadmaster] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const [isError, setError] = useState(false);
 
   const works = [
     `./img/${category}__works/works__${category}-1.jpg`,
@@ -43,7 +44,7 @@ export default function ServicePage() {
           setComments(commentsFromServer);
         },
       )
-      .catch((err) => console.log(err))
+      .catch(() => setError(true))
       .finally(() => {
         setLoading(false);
       });
@@ -57,6 +58,14 @@ export default function ServicePage() {
     return (
       <div className="stet__loader-container">
         <Loader />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="stet__loader-container">
+        Something went wrong. Try reload the page or back later.
       </div>
     );
   }
@@ -123,7 +132,7 @@ export default function ServicePage() {
           <h2 className="prices__title title">Prices</h2>
 
           <div className="prices__price-switcher">
-            <label htmlFor="cbx-3">Headmaster</label>
+            <p onClick={() => setSwitchHeadmaster(false)}>Master</p>
             <div className="price-switcher">
               <input
                 type="checkbox"
@@ -135,6 +144,7 @@ export default function ServicePage() {
                 <span></span>
               </label>
             </div>
+            <p onClick={() => setSwitchHeadmaster(true)}>Headmaster</p>
           </div>
 
           <ul className="prices__list">

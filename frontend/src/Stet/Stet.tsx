@@ -12,8 +12,6 @@ import Footer from '../components/Footer/Footer';
 import './Stet.scss';
 import { goTop } from '../working-files/functions/goTop';
 
-// "homepage": "https://mykhailokrlkrk.github.io/s-tet/",
-
 function Stet() {
   const location = useLocation();
 

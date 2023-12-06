@@ -21,6 +21,24 @@
     }
   }
 
+  &__booking-item {
+    &:nth-child(odd) {
+      background-color: #e7dbc8;
+    }
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    padding: 7px 20px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $col-brown;
+      color: #fff;
+    }
+  }
+
   &__item-title {
     flex-grow: 1;
     margin-right: 30px;
@@ -28,12 +46,12 @@
 
   &__price-switcher {
     display: flex;
-    width: 170px;
+    width: 240px;
     align-items: center;
     justify-content: space-between;
     margin: 0 0 20px auto;
     
-    label {
+    p {
       cursor: pointer;
     }
   }

@@ -1,5 +1,6 @@
 @import './assets/styles/utils/reset.scss';
 @import './assets/styles/utils/variables.scss';
+@import './assets/styles/utils/typography.scss';
 @import './assets/styles/utils/support.scss';
 
 @import './assets/styles/blocks/welcome.scss';
@@ -18,9 +19,7 @@ html {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Gotham Pro', sans-serif;
   font-size: 14px;
   background-color: $col-background;
 }
-
-
