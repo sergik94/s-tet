@@ -52,14 +52,20 @@ export default function Footer() {
           <a
             href="https://www.facebook.com/"
             className="footer__social-link footer__social-link--fb"
+            target="_blank"
+            rel="noreferrer"
           ></a>
           <a
             href="https://www.instagram.com/"
             className="footer__social-link footer__social-link--inst"
+            target="_blank"
+            rel="noreferrer"
           ></a>
           <a
-            href=""
+            href="https://web.telegram.org/"
             className="footer__social-link footer__social-link--tg"
+            target="_blank"
+            rel="noreferrer"
           ></a>
         </div>
       </div>

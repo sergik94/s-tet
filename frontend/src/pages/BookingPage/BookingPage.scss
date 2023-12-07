@@ -330,6 +330,19 @@
     align-items: center;
     font-size: 24px;
     font-weight: 500;
+
+    &--mt-20 {
+      margin-top: 20px;
+    }
+  }
+
+  &__submit-error {
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    color: rgb(136, 17, 17);
   }
 
   &__accepted-message {

@@ -117,9 +117,7 @@ export default function ServicePage() {
                     className="masters__img"
                   />
                 </div>
-                <h3 className="masters__fullname">
-                  {master.name + ' ' + master.lastName}
-                </h3>
+                <h3 className="masters__fullname">{master.fullName}</h3>
                 <p className="masters__qualification">{master.qualification}</p>
               </div>
             ))}

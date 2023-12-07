@@ -48,8 +48,10 @@ export default function BookingPage() {
   const [isClientPhoneErr, setClientPhoneErr] = useState(false);
 
   const [isLoading, setLoading] = useState(true);
+  const [isAcceptLoading, setAcceptLoading] = useState(false);
   const [isAccepted, setAccepted] = useState(false);
   const [isError, setError] = useState(false);
+  const [isSubmitError, setSubmitError] = useState(false);
 
   const getData = async () => {
     setLoading(true);
@@ -151,6 +153,7 @@ export default function BookingPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitError(false);
 
     const namePattern = /^[a-zа-яъїє']+ [a-zа-яъїє']+$/i;
     const minPhoneLength = 13;
@@ -176,15 +179,14 @@ export default function BookingPage() {
     };
 
     try {
-      const response = await postOrder(order);
-
-      if (response.errors) {
-        throw response.errors;
-      }
+      setAcceptLoading(true);
+      await postOrder(order);
     } catch (error) {
-      console.log(error);
+      setSubmitError(true);
 
       return;
+    } finally {
+      setAcceptLoading(false);
     }
 
     setAccepted(true);
@@ -330,7 +332,7 @@ export default function BookingPage() {
                           className="booking__master-img"
                         />
                         <h3 className="booking__master-fullname">
-                          {master.name + ' ' + master.lastName}
+                          {master.fullName}
                         </h3>
                         <p className="booking__master-qualification">
                           {master.qualification}
@@ -418,7 +420,7 @@ export default function BookingPage() {
                   <div className="booking__order-master">
                     Your master:{' '}
                     <span>
-                      {masters.find((m) => m.id === currMaster)?.name ||
+                      {masters.find((m) => m.id === currMaster)?.fullName ||
                         (isHeadMaster ? 'Free Headmaster' : 'Free Master')}
                     </span>
                   </div>
@@ -427,13 +429,25 @@ export default function BookingPage() {
               <p className="booking__prices-total">
                 Total <span>$ {total}</span>
               </p>
-              <button
-                type="submit"
-                className="booking__button"
-                disabled={selectedSubservices.length === 0 || !clientName}
-              >
-                Apply
-              </button>
+              {isAcceptLoading ? (
+                <div className="booking__loader-container booking__loader-container--mt-20">
+                  <Loader />
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="booking__button"
+                  disabled={selectedSubservices.length === 0 || !clientName}
+                >
+                  Apply
+                </button>
+              )}
+
+              {isSubmitError && (
+                <p className="booking__submit-error">
+                  Oops. Something went wrong. <br /> Try again or later please.
+                </p>
+              )}
             </div>
           </aside>
         </form>

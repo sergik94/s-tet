@@ -1,7 +1,6 @@
 export interface Master {
   id: number;
-  name: string;
-  lastName: string;
+  fullName: string;
   qualification: string;
   coverImage: string;
 }
