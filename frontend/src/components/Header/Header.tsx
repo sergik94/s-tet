@@ -167,14 +167,14 @@ export default function Header() {
               </ul>
             </li>
             <li className="header__topmenu-item">
-              <a href="#benefits" className="header__topmenu-link">
+              <HashLink to="#benefits" className="header__topmenu-link">
                 About
-              </a>
+              </HashLink>
             </li>
             <li className="header__topmenu-item">
-              <a href="#contacts" className="header__topmenu-link">
+              <HashLink to="#contacts" className="header__topmenu-link">
                 Contacts
-              </a>
+              </HashLink>
             </li>
           </ul>
         </nav>
