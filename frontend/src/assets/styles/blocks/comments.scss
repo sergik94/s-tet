@@ -29,6 +29,8 @@
     flex-direction: column;
     justify-content: space-between;
     font-size: 16px;
+    border-radius: 5px;
+    overflow: hidden;
 
     @media (max-width: 780px) {
       width: 40%;
